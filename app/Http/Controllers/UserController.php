@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Entidades\Respuesta;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 use App\User;
 use Psy\CodeCleaner\UseStatementPass;
@@ -18,7 +19,12 @@ class UserController extends Controller
     public function index()
     {
        // return "hola";
-        return response()->json(User::All());
+
+        $respuesta = new Respuesta();
+        $respuesta->data = User::All();
+        $respuesta->error = false;
+        $respuesta->mensaje = "Usuarios Encontrados";
+        return response()->json($respuesta);
     }
 
     /**
@@ -67,7 +73,8 @@ class UserController extends Controller
 
                 return response()->json($respuesta);
             }else{
-                //
+
+
                 $datos["cedula"] = $request->cedula;
                 $datos["name"] = $request->name;
                 $datos["apellido"] = $request->apellido;
@@ -75,6 +82,7 @@ class UserController extends Controller
                 $datos["telefono"] = $request->telefono;
                 $datos["email"] = $request->email;
                 $datos["password"] = $request->password;
+
 
                 $usuario = new User($datos);
 
@@ -203,14 +211,16 @@ class UserController extends Controller
             $respuesta->mensaje = "No existe ese email registrado";
 
         }else{
-            if($user->password!=$request->password)
-            {
-                $respuesta->error = true;
-                $respuesta->mensaje = "Contraseña incorrecta";
-            }else{
+           // print_r($request->password);
+           // exit;
+            if(Hash::check($request->password,$user->password)) {
+
                 $respuesta->data = $user;
                 $respuesta->error = false;
                 $respuesta->mensaje = "Ingreso exitoso";
+            }else{
+                $respuesta->error = true;
+                $respuesta->mensaje = "Contraseña incorrecta";
             }
 
         }

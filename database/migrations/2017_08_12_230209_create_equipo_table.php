@@ -18,10 +18,12 @@ class CreateEquipoTable extends Migration
         Schema::create('equipos', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('categoria')->unsigned();
+            $table->integer('cantidad');
             $table->string('descripcion');
             $table->string('modelo');
             $table->foreign('categoria')->references ('id')->on('categoriaequipo');
-            $table->integer('estado');
+            $table->enum('estado',['Activo', 'Inactivo']);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

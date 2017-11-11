@@ -36,3 +36,8 @@ Route::resource('peticionesinternas', 'PeticionesInternasController',
 
 Route::resource('ingresos', 'IngresosController',
     ['only' => ['index', 'store', 'update', 'destroy', 'show']]);
+
+
+//Alquileres
+Route::post('RegistrarAlquiler', 'AlquilerController@store');
+Route::get('GetAllAlquileres/{id}', 'AlquilerController@show');

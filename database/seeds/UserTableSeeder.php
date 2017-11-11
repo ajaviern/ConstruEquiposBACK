@@ -14,25 +14,25 @@ class UserTableSeeder extends Seeder
         //
         DB::table('users')->insert([
             'cedula' =>1065564568,
-            'name' => 'SuperAdmin',
-            'apellido' => 'SuperAdmin',
+            'name' => 'Hernesto',
+            'apellido' => 'Costilla Camelo',
             'telefono' => '3156901816',
-            'rol' => 'SuperAdmin',
-            'email' => 'SuperAdmin@gmail.com',
-            'password' => 'admin',
-            //'password' => bcrypt('admin'),
+            'rol' => 'administrador',
+            'email' => 'superadmin@construequipos.com',
+            //'password' => 'admin',
+            'password' => bcrypt('123456')
         ]);
 
         //
         DB::table('users')->insert([
             'cedula' =>1065564567,
-            'name' => 'Admin',
-            'apellido' => 'Admin',
+            'name' => 'Juan',
+            'apellido' => 'Gonzales',
             'telefono' => '3002744511',
-            'rol' => 'Admin',
-            'email' => 'Admin@gmail.com',
-            'password' => 'admin',
-            //'password' => bcrypt('admin'),
+            'rol' => 'usuario',
+            'email' => 'usuario@gmail.com',
+            //'password' => 'admin',
+            'password' => bcrypt('123456'),
         ]);
     }
 }

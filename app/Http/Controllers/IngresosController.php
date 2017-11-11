@@ -32,7 +32,7 @@ class IngresosController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -44,13 +44,12 @@ class IngresosController extends Controller
 
         $respuesta = new Respuesta();
 
-        if ($ingreso->save())
-        {
+        if ($ingreso->save()) {
             $respuesta->data = $ingreso;
             $respuesta->error = false;
             $respuesta->mensaje = "Ingreso exitosamente Registrado..";
 
-        }else{
+        } else {
             $respuesta->error = true;
             $respuesta->mensaje = "Ingreso No registrado";
         }
@@ -61,7 +60,7 @@ class IngresosController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -71,13 +70,12 @@ class IngresosController extends Controller
         $ingreso = Ingresos::find($id);
 
 
-
-        if($ingreso){
+        if ($ingreso) {
             $respuesta->data = $ingreso;
             $respuesta->error = false;
             $respuesta->mensaje = "Ingreso encontrado exitosamente";
             return response()->json($respuesta);
-        }else{
+        } else {
             $respuesta->data = null;
             $respuesta->error = true;
             $respuesta->mensaje = "Ingreso No encontrado";
@@ -88,7 +86,7 @@ class IngresosController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -99,8 +97,8 @@ class IngresosController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -109,26 +107,23 @@ class IngresosController extends Controller
         //
         $ingreso = Ingresos::find($id);
 
-        if($ingreso) {
+        if ($ingreso) {
             $producto["id_alquiler"] = $request->id_alquiler;
             $producto["id_alquiler_tabla_intersecto"] = $request->id_alquiler_tabla_intersecto;
 
 
-
-
-            if ($producto->save())
-            {
+            if ($producto->save()) {
                 $respuesta->data = $ingreso;
                 $respuesta->error = false;
                 $respuesta->mensaje = "Ingreso Actualizado exitosamente";
 
-            }else{
+            } else {
                 $respuesta->error = true;
                 $respuesta->mensaje = "Ingreso No Actualizado";
             }
 
             return response()->json($respuesta);
-        }else{
+        } else {
             return response()->json("El Ingreso no se encuentra Registrado");
         }
 
@@ -138,7 +133,7 @@ class IngresosController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -146,12 +141,11 @@ class IngresosController extends Controller
         //
         $respuesta = new Respuesta();
 
-        if (Ingresos::destroy($id))
-        {
+        if (Ingresos::destroy($id)) {
             $respuesta->error = false;
             $respuesta->mensaje = "Ingreso Eliminado exitosamente";
 
-        }else{
+        } else {
             $respuesta->error = true;
             $respuesta->mensaje = "Ingreso No Eliminado";
         }

@@ -58,7 +58,9 @@ class EquipoController extends Controller
         $datos["categoria"] = $request->categoria;
         $datos["descripcion"] = $request->descripcion;
         $datos["modelo"] = $request->modelo;
-        $datos["estado"] = $request->estado;
+        $datos["estado"] = "Activo";
+        $datos["cantidad"] = $request->cantidad;
+
 
         $equipo = new Equipo($datos);
 

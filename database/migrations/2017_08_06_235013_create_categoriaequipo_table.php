@@ -17,7 +17,6 @@ class CreateCategoriaequipoTable extends Migration
         Schema::create('categoriaequipo', function (Blueprint $table) {
             $table->increments('id');
             $table->string('categoria');
-            $table->rememberToken();
             $table->timestamps();
         });
     }

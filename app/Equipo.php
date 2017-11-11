@@ -3,12 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Equipo extends Model
 {
-    use Notifiable;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -16,7 +15,7 @@ class Equipo extends Model
      * @var array
      */
     protected $table = "equipos";
-    protected $fillable = array('id', 'categoria','descripcion', 'modelo', 'estado');
+    protected $fillable = array('id', 'categoria','descripcion', 'modelo', 'estado','cantidad');
     public $timestamps = false;
 
 }
