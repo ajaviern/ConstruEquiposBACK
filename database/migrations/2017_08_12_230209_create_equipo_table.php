@@ -20,6 +20,7 @@ class CreateEquipoTable extends Migration
             $table->integer('categoria')->unsigned();
             $table->integer('cantidad');
             $table->string('descripcion');
+            $table->integer('valor');
             $table->string('modelo');
             $table->foreign('categoria')->references ('id')->on('categoriaequipo');
             $table->enum('estado',['Activo', 'Inactivo']);

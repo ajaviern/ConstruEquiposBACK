@@ -15,7 +15,8 @@ class AlquilerController extends Controller
      */
     public function index()
     {
-        //
+        $logica = new LogicaAlquiler();
+        return response()->json($logica->GetAllAlquileres());
     }
 
     /**
@@ -25,7 +26,7 @@ class AlquilerController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**

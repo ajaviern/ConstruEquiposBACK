@@ -41,3 +41,4 @@ Route::resource('ingresos', 'IngresosController',
 //Alquileres
 Route::post('RegistrarAlquiler', 'AlquilerController@store');
 Route::get('GetAllAlquileres/{id}', 'AlquilerController@show');
+Route::get('GetAllAlquileres', 'AlquilerController@index');

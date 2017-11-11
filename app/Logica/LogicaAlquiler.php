@@ -9,6 +9,7 @@ namespace App\Logica;
 
 use App\Entidades\Respuesta;
 use App\Equipo;
+use App\Producto;
 use App\User;
 use App\Alquiler;
 use App\DetalleSalidas;
@@ -51,6 +52,8 @@ class LogicaAlquiler
                         //cuando agregas un participante
                         //  return response()->json($DatosUserReunion);
 
+                        $producto = $this->getProducto($item['equipos_id']);
+
                         $detalle['alquileres_id'] = $alquiler->id;
                         $detalle['equipos_id'] = $item['equipos_id'];
                         $detalle['fecha'] = $item['fecha'];
@@ -60,7 +63,7 @@ class LogicaAlquiler
                         $fecha_final = new DateTime($item['fecha']);
                         $interval = $fecha_inicial->diff($fecha_final);
                         $dias = $interval->format('%R%a días');
-                        $sub =  $item['valor'] * $item['cantidad'] * $dias;
+                        $sub =  $producto->valor * $item['cantidad'] * $dias;
 
                         $detalle['cantidad'] = $item['cantidad'];
                         $detalle['subtotal'] = $sub ;
@@ -69,9 +72,9 @@ class LogicaAlquiler
                         $intersecto = new DetalleSalidas($detalle);
                         $intersecto->save();
 
-                        $equipo = Equipo::find($detalle['equipos_id']);
-                        $equipo->cantidad=$equipo->cantidad- $detalle['cantidad'];
-                        $equipo->update();
+                      //  $equipo = Equipo::find($detalle['equipos_id']);
+                        $producto->cantidad=$producto->cantidad- $detalle['cantidad'];
+                        $producto->update();
 
 
                     }
@@ -133,6 +136,13 @@ class LogicaAlquiler
     }
 
 
+    private function getProducto($id)
+    {
+        $equipo = Equipo::find($id);
+
+        return $equipo;
+    }
+
     /**
      * Método para obetner el subtotal de un alquiler
      * @param $detalles
@@ -146,12 +156,13 @@ class LogicaAlquiler
         $sub = 0;
 
         foreach ($detalles as $item) {
+             $producto = $this->getProducto($item['equipos_id']);
             $fecha_final = new DateTime($item['fecha']);
 
             $interval = $fecha_inicial->diff($fecha_final);
             $dias = $interval->format('%R%a días');
 
-            $sub = $sub + $item['valor'] * $item['cantidad'] * $dias;
+            $sub = $sub + $producto->valor * $item['cantidad'] * $dias;
 
 
 
@@ -203,8 +214,9 @@ class LogicaAlquiler
 
         if($this->ValidarUsuario($usuarios_id)){
             $alquileres = Alquiler::join('users', 'alquileres.usuarios_id', '=','users.id')
-                    ->select('alquileres.*')
+                    ->select('alquileres.*','users.cedula','users.name','users.apellido','users.telefono')
                     ->where('alquileres.usuarios_id', $usuarios_id)
+                     ->orderBy('alquileres.created_at', 'DESC')
                     ->get();
 
 
@@ -231,6 +243,40 @@ class LogicaAlquiler
             $respuesta->error = true;
             $respuesta->mensaje = "Usuario Invalido";
         }
+
+
+        return $respuesta;
+    }
+
+    public function GetAllAlquileres(){
+
+        $respuesta = new Respuesta();
+
+            $alquileres = Alquiler::join('users', 'alquileres.usuarios_id', '=','users.id')
+                ->select('alquileres.*','users.cedula','users.name','users.apellido','users.telefono')
+                ->orderBy('alquileres.created_at', 'DESC')
+                ->get();
+
+
+            if (count($alquileres) > 0) {
+
+                //Agregamos el detalle del alquiler
+                foreach ($alquileres as $t){
+                    $t["detalle"] = DetalleSalidas::join('alquileres', 'detalles_salidas.alquileres_id', '=', 'alquileres.id')
+                        ->join('equipos', 'detalles_salidas.equipos_id', '=', 'equipos.id')
+                        ->where('detalles_salidas.alquileres_id', $t["id"])
+                        ->select('detalles_salidas.*', 'equipos.descripcion','equipos.modelo')
+                        ->get();
+                }
+
+                $respuesta->error = false;
+                $respuesta->mensaje = "Alquileres Encontrados";
+                $respuesta->datos = $alquileres;
+            } else {
+                $respuesta->error = true;
+                $respuesta->mensaje = "El usuario no tiene alquileres";
+            }
+
 
 
         return $respuesta;
