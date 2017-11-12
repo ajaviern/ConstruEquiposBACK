@@ -281,4 +281,26 @@ class LogicaAlquiler
 
         return $respuesta;
     }
+
+    public function Facturacion($id_alquiler){
+        $respuesta = new Respuesta();
+
+        $alquiler =Alquiler::find($id_alquiler);
+         if($alquiler){
+             $alquiler->estado ='despachado';
+             $alquiler->update();
+
+             $respuesta->error =false;
+             $respuesta->data =$alquiler;
+             $respuesta->mensaje="Alquiler Pagado y Despachado";
+
+         }else{
+            $respuesta->error =true;
+           // $respuesta->data =$alquiler;
+            $respuesta->mensaje="Error en el id del alquiler";
+
+        }
+        return $respuesta;
+
+    }
 }

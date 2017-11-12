@@ -1,8 +1,10 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Carbon\Carbon;
 
 class EquiposSeeder extends Seeder
+
 {
     /**
      * Run the database seeds.
@@ -17,7 +19,8 @@ class EquiposSeeder extends Seeder
             'modelo'=>"YAMAHA 54453",
             'estado'=>'Activo',
             'cantidad'=>3,
-            'valor'=>10000
+            'valor'=>10000,
+            'created_at'=> Carbon::now()->format('Y-m-d H:i:s')
         ]);
         DB::table('equipos')->insert([
             'categoria' =>2,
@@ -25,7 +28,8 @@ class EquiposSeeder extends Seeder
             'modelo'=>"XFY 4567 233",
             'estado'=>'Activo',
             'cantidad'=>20,
-            'valor'=>25000
+            'valor'=>25000,
+            'created_at'=> Carbon::now()->format('Y-m-d H:i:s')
         ]);
         DB::table('equipos')->insert([
             'categoria' =>1,
@@ -33,7 +37,8 @@ class EquiposSeeder extends Seeder
             'modelo'=>"ZZ 9000",
             'estado'=>'Activo',
             'cantidad'=>45,
-            'valor'=>45000
+            'valor'=>45000,
+            'created_at'=> Carbon::now()->format('Y-m-d H:i:s')
         ]);
         DB::table('equipos')->insert([
             'categoria' =>3,
@@ -41,7 +46,8 @@ class EquiposSeeder extends Seeder
             'modelo'=>"3233 ASP",
             'estado'=>'Activo',
             'cantidad'=>4,
-            'valor'=>95000
+            'valor'=>95000,
+            'created_at'=> Carbon::now()->format('Y-m-d H:i:s')
         ]);
     }
 }

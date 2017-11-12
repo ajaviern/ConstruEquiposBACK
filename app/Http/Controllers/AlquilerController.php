@@ -75,7 +75,8 @@ class AlquilerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $logica = new LogicaAlquiler();
+        return response()->json($logica->Facturacion($id));
     }
 
     /**

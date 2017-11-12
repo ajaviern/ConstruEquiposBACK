@@ -14,11 +14,11 @@ class EquipoController extends Controller
      */
     public function index()
     {
-        //
 
         $equipos = Equipo::join('categoriaequipo','equipos.categoria','=','categoriaequipo.id')
 
             ->select('equipos.*','categoriaequipo.categoria as nombrecategoria')
+            ->orderBy('equipos.created_at', 'ASC')
             ->get();
         //return response()->json($equipos);
 
@@ -60,6 +60,7 @@ class EquipoController extends Controller
         $datos["modelo"] = $request->modelo;
         $datos["estado"] = "Activo";
         $datos["cantidad"] = $request->cantidad;
+        $datos["valor"] = $request->valor;
 
 
         $equipo = new Equipo($datos);
