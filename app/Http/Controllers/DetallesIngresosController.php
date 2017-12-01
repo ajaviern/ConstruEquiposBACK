@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Ingresos;
+use App\Detalles_Ingresos;
+use App\DetalleSalidas;
+use App\DetallesIngresos;
+use App\Equipo;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Entidades\Respuesta;
 
-class IngresosController extends Controller
+class DetallesIngresosController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +20,7 @@ class IngresosController extends Controller
     public function index()
     {
         //
-        return response()->json(Ingresos::All());
+        return response()->json(DetallesIngresos::All());
     }
 
     /**
@@ -37,17 +41,45 @@ class IngresosController extends Controller
      */
     public function store(Request $request)
     {
-        $datos["id_alquiler"] = $request->id_alquiler;
-        $datos["id_alquiler_tabla_intersecto"] = $request->id_alquiler_tabla_intersecto;
+        $fechahoy = Carbon::now();
+        $datos["id_detalles_salidas"] = $request->id_detalles_salidas;
+        $datos["cantidad_ingreso"] = $request->cantidad_ingreso;
+        $datos["fecha_ingreso"] = $fechahoy;
 
-        $ingreso = new Ingresos($datos);
+        //accedemos a la tabla
+        $equipo = Equipo::select('equipos.*')
+                ->join('detalles_salidas','equipos.id','detalles_salidas.equipos_id')//para enlazar 2 tablas
+                ->join('alquileres','detalles_salidas.alquileres_id','alquileres.id')//para enlazar 2 tablas
+                ->join('users','alquileres.usuarios_id','users.id')
+                ->where('detalles_salidas.id', $datos["id_detalles_salidas"])// comparamos que detalles_salidas.id sea igual a  $datos["id_detalles_salidas"]
+                //  ->get();//esto devuelve un array una coleccion
+                ->first();//devuelve el primero de la coleccion
+        //print_r($equipo);
+        //exit;
+
+        $equipo->cantidad= $equipo->cantidad + $datos["cantidad_ingreso"];
+        $equipo->save();
+
+        $detallesalida = DetalleSalidas::select('detalles_salidas.*')
+            ->where('detalles_salidas.id', $datos["id_detalles_salidas"])// comparamos que detalles_salidas.id sea igual a  $datos["id_detalles_salidas"]
+            //  ->get();//esto devuelve un array una coleccion
+            ->first();//devuelve el primero de la coleccion
+
+        $detallesalida->estado= 1;
+        $detallesalida->save();
+
+        $ingreso = new Detalles_Ingresos($datos);
+
 
         $respuesta = new Respuesta();
+
+
 
         if ($ingreso->save()) {
             $respuesta->data = $ingreso;
             $respuesta->error = false;
             $respuesta->mensaje = "Ingreso exitosamente Registrado..";
+
 
         } else {
             $respuesta->error = true;
@@ -67,7 +99,7 @@ class IngresosController extends Controller
     {
         $respuesta = new Respuesta();
         //
-        $ingreso = Ingresos::find($id);
+        $ingreso = Detalles_Ingresos::find($id);
 
 
         if ($ingreso) {
@@ -105,12 +137,13 @@ class IngresosController extends Controller
     {
         $respuesta = new Respuesta();
         //
-        $ingreso = Ingresos::find($id);
+        $ingreso = DetallesIngresos::find($id);
 
         if ($ingreso) {
-            $producto["id_alquiler"] = $request->id_alquiler;
-            $producto["id_alquiler_tabla_intersecto"] = $request->id_alquiler_tabla_intersecto;
 
+            $producto["id_detalles_salidas"] = $request->id_detalles_salidas;
+            $producto["cantidad_ingreso"] = $request->cantidad_ingreso;
+            $producto["fecha_ingreso"] = $request->fecha_ingreso;
 
             if ($producto->save()) {
                 $respuesta->data = $ingreso;
@@ -141,7 +174,7 @@ class IngresosController extends Controller
         //
         $respuesta = new Respuesta();
 
-        if (Ingresos::destroy($id)) {
+        if (DetallesIngresos::destroy($id)) {
             $respuesta->error = false;
             $respuesta->mensaje = "Ingreso Eliminado exitosamente";
 

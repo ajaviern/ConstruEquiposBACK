@@ -21,6 +21,7 @@ class TablaDetallesSalidas extends Migration
             $table->date('fecha');
             $table->integer('cantidad');
             $table->integer('subtotal');
+            $table->integer('estado')->default(0);
             $table->timestamps();
             $table->softDeletes();
 

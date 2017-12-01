@@ -9,6 +9,6 @@ class DetalleSalidas extends Model
 {
     use SoftDeletes;
     protected $table = "detalles_salidas";
-    protected $fillable = array('equipos_id', 'alquileres_id','fecha','cantidad','subtotal');
+    protected $fillable = array('equipos_id', 'alquileres_id','fecha','cantidad','subtotal','estado');
     protected $dates = ['deleted_at'];
 }

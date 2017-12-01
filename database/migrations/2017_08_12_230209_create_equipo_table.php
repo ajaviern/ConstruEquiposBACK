@@ -19,6 +19,7 @@ class CreateEquipoTable extends Migration
             $table->increments('id');
             $table->integer('categoria')->unsigned();
             $table->integer('cantidad');
+            $table->integer('totalExistencias')->nullable();
             $table->string('descripcion');
             $table->integer('valor');
             $table->string('modelo');

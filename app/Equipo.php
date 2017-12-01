@@ -15,7 +15,7 @@ class Equipo extends Model
      * @var array
      */
     protected $table = "equipos";
-    protected $fillable = array('id', 'categoria','descripcion', 'modelo', 'estado','cantidad','valor');
+    protected $fillable = array('id', 'categoria','descripcion', 'modelo', 'estado','cantidad','valor','totalExistencias');
     public $timestamps = false;
 
 }

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\CategoriaEquipo;
+use App\DetalleSalidas;
 use Illuminate\Http\Request;
 use App\Entidades\Respuesta;
 use App\Equipo;
+use Carbon\Carbon;
 class EquipoController extends Controller
 {
     /**
@@ -61,7 +64,7 @@ class EquipoController extends Controller
         $datos["estado"] = "Activo";
         $datos["cantidad"] = $request->cantidad;
         $datos["valor"] = $request->valor;
-
+        $datos['totalExistencias']= $datos["cantidad"];
 
         $equipo = new Equipo($datos);
 
@@ -88,10 +91,15 @@ class EquipoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($categorias_id)
     {
-        //
-        return Equipo::find($id);
+        $equipos = Equipo::join('categoriaequipo', 'equipos.categoria', '=','categoriaequipo.id')
+            ->select('equipos.*','categoriaequipo.categoria as nombreCategoria')
+            ->where('equipos.categoria', $categorias_id)
+           // ->orderBy('alquileres.created_at', 'DESC')
+            ->get();
+
+        return $equipos;
     }
 
     /**
@@ -164,6 +172,116 @@ class EquipoController extends Controller
             $respuesta->error = true;
             $respuesta->mensaje = "Usuario No Eliminado";
         }
+
+        return response()->json($respuesta);
+    }
+
+    /**
+     * EquiposmasAlquilados a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function EquiposmasAlquilados()
+    {
+        //
+        $respuesta = new Respuesta();
+
+        $equiposall =  Equipo::select('equipos.*')
+           // ->where()
+            ->get();
+
+            foreach ($equiposall as $equipo){
+                $detalles = DetalleSalidas::select('detalles_salidas.*')
+                    ->where('detalles_salidas.equipos_id',$equipo->id)
+                    ->get();
+                $equipo['y'] = count($detalles);
+                $equipo['key']= $equipo->descripcion;
+            }
+
+            $respuesta->error = false;
+            $respuesta->mensaje = "Reportes";
+            $respuesta->data=$equiposall;
+
+
+        return response()->json($respuesta);
+    }
+
+    public function EquiposmasAlquiladosPorMes($fechaInicial,$fechaFinal)
+    {
+        //
+        $respuesta = new Respuesta();
+        $Fechahoy= Carbon::now();
+
+        $Hace30 = $Fechahoy->subDays(30);
+
+
+        $equiposall =  Equipo::select('equipos.*')
+            // ->where()
+            ->get();
+
+        foreach ($equiposall as $equipo){
+            $detalles = DetalleSalidas::select('detalles_salidas.*','alquileres.fecha as fechainicial')
+                ->join('alquileres','detalles_salidas.equipos_id','alquileres.id')
+                ->where('detalles_salidas.equipos_id',$equipo->id)
+               ->where('detalles_salidas.fecha ',$equipo->fecha)
+               // ->where('detalles_salidas.fecha','',$equipo->fecha)
+                ->get();
+            $equipo['y'] = count($detalles);
+            $equipo['key']= $equipo->descripcion;
+        }
+
+        $respuesta->error = false;
+        $respuesta->mensaje = "Reportes";
+        $respuesta->data=$equiposall;
+
+
+        return response()->json($respuesta);
+    }
+
+    public function AlquileresSeisMesesAntes()
+    {
+
+
+
+        //
+        $respuesta = new Respuesta();
+
+        $categorias  = CategoriaEquipo::select('categoriaequipo.*')
+            // ->where()
+            ->get();
+
+
+        $labels = [];
+        $data = [];
+
+        $cont = 0;
+        foreach ($categorias as $cat){
+          $detalles = DetalleSalidas::select('detalles_salidas.*')
+              ->join('equipos','detalles_salidas.equipos_id','equipos.id')
+              ->join('categoriaequipo','equipos.categoria','categoriaequipo.id')
+               ->where('categoriaequipo.id',$cat->id)
+              ->get();
+          $sub = 0;
+
+            foreach ($detalles as $detalle){
+                $sub = $sub +$detalle->subtotal;
+            }
+            $labels[$cont] =$cat->categoria;
+            $data[$cont] = $sub;
+            $cont++;
+
+        }
+
+        $answer['labels']=$labels;
+        $answer['data']=$data;
+
+
+
+        $respuesta->error = false;
+        $respuesta->mensaje = "Datos encontrados";
+        $respuesta->data=$answer;
+
 
         return response()->json($respuesta);
     }

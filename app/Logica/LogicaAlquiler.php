@@ -36,9 +36,10 @@ class LogicaAlquiler
             if ($this->ValidarUsuario($datos['usuarios_id'])) {
 
                 $detalles = $datos['detalle'];
-                $hoy = Carbon::now();
-                $hoy->setTimezone('-5');
-                $hoy->toDateString();
+                $hoy =  $datos['fecha'];
+               // $hoy = Carbon::now();
+                //$hoy->setTimezone('-5');
+                //$hoy->toDateString();
                //$datos['fecha'] = strftime("%Y-%m-%d-%H-%M-%S", time());
                 $datos['fecha'] = $hoy;
                 $datos['total'] = $this->getSubtotal($datos['detalle'],$hoy);
@@ -109,7 +110,9 @@ class LogicaAlquiler
      */
     private function ValidarDatosAlquiler($datos)
     {
+
         if (!empty($datos["usuarios_id"]) &&
+            !empty($datos["fecha"]) &&
             !empty($datos["detalle"])) {
 
             return true;

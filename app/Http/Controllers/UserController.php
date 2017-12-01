@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Alquiler;
 use App\Entidades\Respuesta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -224,6 +225,29 @@ class UserController extends Controller
             }
 
         }
+
+        return response()->json($respuesta);
+    }
+
+    public function AlquilerporPersonas(){
+        $respuesta = new Respuesta();
+
+        $personasall =  User::select('users.*')
+            // ->where()
+            ->get();
+
+        foreach ($personasall as $user){
+            $detalles = Alquiler::select('alquileres.*')
+                ->where('alquileres.usuarios_id',$user->id)
+                ->get();
+            $user['y'] = count($detalles);
+            $user['key']= $user->name;
+        }
+
+        $respuesta->error = false;
+        $respuesta->mensaje = "Reportes";
+        $respuesta->data=$personasall;
+
 
         return response()->json($respuesta);
     }

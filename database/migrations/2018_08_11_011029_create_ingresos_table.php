@@ -13,10 +13,12 @@ class CreateIngresosTable extends Migration
      */
     public function up()
     {
-        Schema::create('ingresos', function (Blueprint $table) {
+        Schema::create('detalles_ingresos', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('id_alquiler');
-            $table->string('id_alquiler_tabla_intersecto');
+            $table->integer('id_detalles_salidas')->unsigned();
+            $table->foreign('id_detalles_salidas')->references ('id')->on('detalles_salidas');
+            $table->integer('cantidad_ingreso');
+            $table->date('fecha_ingreso');
             $table->timestamps();
         });
     }

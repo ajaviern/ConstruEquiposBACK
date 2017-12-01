@@ -40,6 +40,11 @@ Route::resource('ingresos', 'IngresosController',
 
 //Alquileres
 Route::post('RegistrarAlquiler', 'AlquilerController@store');
+Route::post('DetallesIngresos', 'DetallesIngresosController@store');
+Route::get('EquiposmasAlquilados', 'EquipoController@EquiposmasAlquilados');
+Route::get('AlquileresSeisMesesAntes', 'EquipoController@AlquileresSeisMesesAntes');
+Route::get('AlquilerporPersonas', 'UserController@AlquilerporPersonas');
+Route::get('EquiposmasAlquiladosPorMes', 'EquipoController@EquiposmasAlquiladosPorMes');
 Route::get('GetAllAlquileres/{id}', 'AlquilerController@show');
 Route::get('GetAllAlquileres', 'AlquilerController@index');
 Route::put('Facturar/{id}', 'AlquilerController@update');
